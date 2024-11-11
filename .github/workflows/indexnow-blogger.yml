@@ -2,8 +2,11 @@ name: IndexNow Blogger Submission
 
 on:
   schedule:
-    - cron: '0 * * * *' # Runs hourly to check for new posts
-  workflow_dispatch: # Allows manual triggering of the workflow
+    - cron: '0 6 * * *'  # Runs hourly to check for new posts
+  workflow_dispatch:  # Allows manual triggering of the workflow
+  push:
+    branches:
+      - main  # Ensures this runs only when changes are pushed to the main branch
 
 jobs:
   check-and-submit:
