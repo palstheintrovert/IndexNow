@@ -1,0 +1,59 @@
+name: IndexNow Blogger Submission
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs hourly to check for new posts
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  check-and-submit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Fetch Blog RSS Feeds and Submit to IndexNow
+        env:
+          INDEXNOW_KEY: '987f6ee2e8af4719b4718f14b87d061f'
+        run: |
+          # Define the list of blog RSS feeds
+          BLOGS=(
+            "https://articlesdrive.blogspot.com/feeds/posts/default?alt=rss"
+            "https://hdmoviesbox.blogspot.com/feeds/posts/default?alt=rss"
+            "https://softwaresamongus.blogspot.com/feeds/posts/default?alt=rss"
+            "https://hdsportsstream.blogspot.com/feeds/posts/default?alt=rss"
+            "https://tophowtodo.blogspot.com/feeds/posts/default?alt=rss"
+            "https://hdsportschannel4u.blogspot.com/feeds/posts/default?alt=rss"
+        
+          )
+
+          # File to store previously submitted URLs
+          SUBMITTED_URLS="submitted_urls.txt"
+          touch $SUBMITTED_URLS
+
+          # Loop through each blog feed
+          for blog_rss in "${BLOGS[@]}"; do
+            # Fetch all posts from the blog's RSS feed
+            all_urls=$(curl -s "$blog_rss" | grep -oP '(?<=<link>)(https?://[^<]+)')
+
+            for url in $all_urls; do
+              # Check if the URL has already been submitted
+              if ! grep -q "$url" "$SUBMITTED_URLS"; then
+                # Submit the URL to IndexNow
+                curl -s "https://api.indexnow.org/indexnow?url=${url}&key=${INDEXNOW_KEY}"
+                echo "Submitted $url to IndexNow"
+
+                # Add the URL to the submitted URLs file
+                echo "$url" >> $SUBMITTED_URLS
+              fi
+            done
+          done
+
+      - name: Commit Submitted URLs
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add $SUBMITTED_URLS
+          git commit -m "Update submitted URLs"
+          git push
