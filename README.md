@@ -24,7 +24,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-
+[![IndexNow Blogger Submission](https://github.com/palstheintrovert/IndexNow/actions/workflows/indexnow-blogger.yml/badge.svg)](https://github.com/palstheintrovert/IndexNow/actions/workflows/indexnow-blogger.yml)
 
 
 <!-- PROJECT LOGO -->
