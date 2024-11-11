@@ -51,12 +51,18 @@ jobs:
               fi
             done
           done
-
-      - name: Commit Submitted URLs
-        run: |
+          
+          - name: Commit Submitted URLs
+          env:
+          PAT: ${{ secrets.PAT }}
+          run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
           git add -A # Adds all files, including untracked ones
           git commit -m "Update submitted URLs" || echo "No changes to commit"
-          git push
+          git push "https://${PAT}@github.com/palstheintrovert/IndexNow.git" || echo "Push failed"
+  
+    
+
+  
 
