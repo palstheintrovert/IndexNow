@@ -7,11 +7,11 @@ on:
 
 jobs:
   check-and-submit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Specifies the environment for the job
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3  # Updated to the latest version
+        uses: actions/checkout@v3
 
       - name: Fetch Blog RSS Feeds and Submit to IndexNow
         env:
@@ -24,8 +24,6 @@ jobs:
             "https://softwaresamongus.blogspot.com/feeds/posts/default?alt=rss"
             "https://hdsportsstream.blogspot.com/feeds/posts/default?alt=rss"
             "https://tophowtodo.blogspot.com/feeds/posts/default?alt=rss"
-            "https://hdsportschannel4u.blogspot.com/feeds/posts/default?alt=rss"
-        
           )
 
           # File to store previously submitted URLs
@@ -54,6 +52,7 @@ jobs:
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
-          git add $SUBMITTED_URLS
-          git commit -m "Update submitted URLs"
+          git add -A # Adds all files, including untracked ones
+          git commit -m "Update submitted URLs" || echo "No changes to commit"
           git push
+
